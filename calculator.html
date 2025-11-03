@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="google-adsense-account" content="ca-pub-8556925680320624">
+    <title>Hindu Star Birthday Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #fef3c7 0%, #fed7aa 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 16px;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .input-section {
+            background: #fff7ed;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+
+        .input-section h2 {
+            color: #92400e;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #92400e;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #fed7aa;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #f97316;
+        }
+
+        .btn-calculate {
+            width: 100%;
+            padding: 15px;
+            background: #f97316;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-calculate:hover:not(:disabled) {
+            background: #ea580c;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(249, 115, 22, 0.3);
+        }
+
+        .btn-calculate:disabled {
+            background: #fed7aa;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .error {
+            background: #fee2e2;
+            color: #991b1b;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #dc2626;
+            display: none;
+        }
+
+        .error.show {
+            display: block;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            display: none;
+        }
+
+        .loading.show {
+            display: block;
+        }
+
+        .spinner {
+            border: 4px solid #fed7aa;
+            border-top: 4px solid #f97316;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .birth-info {
+            background: #ecfccb;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border-left: 4px solid #84cc16;
+            display: none;
+        }
+
+        .birth-info.show {
+            display: block;
+        }
+
+        .birth-info h2 {
+            color: #3f6212;
+            margin-bottom: 15px;
+            font-size: 22px;
+        }
+
+        .birth-info p {
+            color: #4d7c0f;
+            margin: 8px 0;
+            font-size: 16px;
+        }
+
+        .birth-info strong {
+            color: #365314;
+        }
+
+        .results {
+            display: none;
+        }
+
+        .results.show {
+            display: block;
+        }
+
+        .results h2 {
+            color: #92400e;
+            margin-bottom: 15px;
+            font-size: 24px;
+        }
+
+        .info-text {
+            background: #dbeafe;
+            padding: 15px;
+            border-radius: 8px;
+            color: #1e40af;
+            margin-bottom: 20px;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .birthday-list {
+            display: grid;
+            gap: 15px;
+        }
+
+        .birthday-card {
+            display: flex;
+            align-items: center;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            border-left: 4px solid #f97316;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .birthday-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        .year-badge {
+            background: #f97316;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            font-size: 28px;
+            font-weight: bold;
+            margin-right: 20px;
+            min-width: 90px;
+            text-align: center;
+        }
+
+        .birthday-details {
+            flex: 1;
+        }
+
+        .date {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1f2937;
+            margin: 5px 0;
+        }
+
+        .nakshatra {
+            color: #d97706;
+            font-weight: 600;
+            margin: 5px 0;
+            font-size: 16px;
+        }
+
+        .tithi {
+            color: #6b7280;
+            font-size: 14px;
+            margin: 5px 0;
+        }
+
+        .info-section {
+            background: #f3f4f6;
+            padding: 25px;
+            border-radius: 10px;
+            margin-top: 30px;
+        }
+
+        .info-section h3 {
+            color: #92400e;
+            margin-bottom: 15px;
+            font-size: 20px;
+        }
+
+        .info-section p {
+            color: #4b5563;
+            line-height: 1.8;
+            margin-bottom: 12px;
+        }
+
+        @media (max-width: 600px) {
+            .birthday-card {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .year-badge {
+                margin-right: 0;
+                margin-bottom: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌟 Hindu Star Birthday Calculator</h1>
+            <p>Discover your auspicious Nakshatra birthday dates</p>
+        </div>
+
+        <div class="content">
+            <div class="input-section">
+                <h2>Enter Your Birth Details</h2>
+                
+                <div class="form-group">
+                    <label for="birthDate">Birth Date (English Calendar):</label>
+                    <input type="date" id="birthDate" max="">
+                </div>
+
+                <div class="form-group">
+                    <label for="birthTime">Birth Time (Optional):</label>
+                    <input type="time" id="birthTime" value="12:00">
+                </div>
+
+                <div class="form-group">
+                    <label for="latitude">Latitude:</label>
+                    <input type="number" id="latitude" step="0.0001" value="13.0827" placeholder="e.g., 13.0827 (Chennai)">
+                </div>
+
+                <div class="form-group">
+                    <label for="longitude">Longitude:</label>
+                    <input type="number" id="longitude" step="0.0001" value="80.2707" placeholder="e.g., 80.2707 (Chennai)">
+                </div>
+
+                <button class="btn-calculate" id="calculateBtn" onclick="calculateStarBirthday()">
+                    Calculate Star Birthdays
+                </button>
+            </div>
+
+            <div class="error" id="errorMsg"></div>
+
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p>Calculating your star birthdays...</p>
+            </div>
+
+            <div class="birth-info" id="birthInfo">
+                <h2>Your Birth Star (Nakshatra)</h2>
+                <p><strong>Birth Date:</strong> <span id="birthDateDisplay"></span></p>
+                <p><strong>Nakshatra:</strong> <span id="birthNakshatra"></span></p>
+                <p><strong>Tithi:</strong> <span id="birthTithi"></span></p>
+                <p><strong>Paksha:</strong> <span id="birthPaksha"></span></p>
+            </div>
+
+            <div class="results" id="results">
+                <h2>Your Star Birthdays (Next 5 Years)</h2>
+                <div class="info-text">
+                    Your Hindu star birthday occurs when the same Nakshatra (birth star) and Tithi (lunar day) 
+                    combination appears in the same Paksha (lunar fortnight) as your birth.
+                </div>
+                
+                <div class="birthday-list" id="birthdayList"></div>
+            </div>
+
+            <div class="info-section">
+                <h3>About Star Birthdays</h3>
+                <p>
+                    In Hindu tradition, your star birthday (Nakshatra birthday) is celebrated when the Moon 
+                    returns to the same nakshatra (lunar constellation) and tithi (lunar day) in which you were born, 
+                    in the same paksha (waxing or waning phase). This is considered more auspicious than the 
+                    regular solar calendar birthday.
+                </p>
+                <p>
+                    <strong>Note:</strong> This calculator uses astronomical calculations based on traditional Vedic principles. 
+                    The dates are approximations. For precise religious observances, please consult with a local pandit or priest.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Set max date to today
+        document.getElementById('birthDate').max = new Date().toISOString().split('T')[0];
+
+        // Nakshatra and Tithi data
+        const NAKSHATRAS = [
+            'Ashwini', 'Bharani', 'Krittika', 'Rohini', 'Mrigashira', 'Ardra',
+            'Punarvasu', 'Pushya', 'Ashlesha', 'Magha', 'Purva Phalguni',
+            'Uttara Phalguni', 'Hasta', 'Chitra', 'Swati', 'Vishakha',
+            'Anuradha', 'Jyeshtha', 'Moola', 'Purva Ashadha', 'Uttara Ashadha',
+            'Shravana', 'Dhanishta', 'Shatabhisha', 'Purva Bhadrapada',
+            'Uttara Bhadrapada', 'Revati'
+        ];
+
+        const TITHIS = [
+            'Pratipada', 'Dwitiya', 'Tritiya', 'Chaturthi', 'Panchami',
+            'Shashthi', 'Saptami', 'Ashtami', 'Navami', 'Dashami',
+            'Ekadashi', 'Dwadashi', 'Trayodashi', 'Chaturdashi', 'Purnima'
+        ];
+
+        const PAKSHAS = ['Shukla Paksha', 'Krishna Paksha'];
+
+        // More accurate lunar position calculation using astronomical formulas
+        function getMoonLongitude(jd) {
+            // Julian centuries from J2000.0
+            const T = (jd - 2451545.0) / 36525.0;
+            
+            // Mean longitude of the Moon
+            const L0 = 218.3164477 + 481267.88123421 * T - 0.0015786 * T * T + 
+                       T * T * T / 538841.0 - T * T * T * T / 65194000.0;
+            
+            // Mean elongation of the Moon
+            const D = 297.8501921 + 445267.1114034 * T - 0.0018819 * T * T + 
+                      T * T * T / 545868.0 - T * T * T * T / 113065000.0;
+            
+            // Sun's mean anomaly
+            const M = 357.5291092 + 35999.0502909 * T - 0.0001536 * T * T + 
+                      T * T * T / 24490000.0;
+            
+            // Moon's mean anomaly
+            const M1 = 134.9633964 + 477198.8675055 * T + 0.0087414 * T * T + 
+                       T * T * T / 69699.0 - T * T * T * T / 14712000.0;
+            
+            // Moon's argument of latitude
+            const F = 93.2720950 + 483202.0175233 * T - 0.0036539 * T * T - 
+                      T * T * T / 3526000.0 + T * T * T * T / 863310000.0;
+            
+            // Convert to radians
+            const toRad = Math.PI / 180;
+            
+            // Main periodic terms for longitude
+            let longitude = L0 +
+                6.288774 * Math.sin(M1 * toRad) +
+                1.274027 * Math.sin((2 * D - M1) * toRad) +
+                0.658314 * Math.sin(2 * D * toRad) +
+                0.213618 * Math.sin(2 * M1 * toRad) -
+                0.185116 * Math.sin(M * toRad) -
+                0.114332 * Math.sin(2 * F * toRad);
+            
+            // Normalize to 0-360
+            longitude = longitude % 360;
+            if (longitude < 0) longitude += 360;
+            
+            return longitude;
+        }
+
+        // Get Sun's longitude (simplified)
+        function getSunLongitude(jd) {
+            const T = (jd - 2451545.0) / 36525.0;
+            const L0 = 280.46646 + 36000.76983 * T + 0.0003032 * T * T;
+            const M = 357.52911 + 35999.05029 * T - 0.0001537 * T * T;
+            const C = (1.914602 - 0.004817 * T - 0.000014 * T * T) * Math.sin(M * Math.PI / 180) +
+                      (0.019993 - 0.000101 * T) * Math.sin(2 * M * Math.PI / 180) +
+                      0.000289 * Math.sin(3 * M * Math.PI / 180);
+            
+            let longitude = (L0 + C) % 360;
+            if (longitude < 0) longitude += 360;
+            
+            return longitude;
+        }
+
+        // Convert date to Julian Day
+        function dateToJD(date) {
+            const a = Math.floor((14 - (date.getMonth() + 1)) / 12);
+            const y = date.getFullYear() + 4800 - a;
+            const m = (date.getMonth() + 1) + 12 * a - 3;
+            
+            let jd = date.getDate() + Math.floor((153 * m + 2) / 5) + 365 * y + 
+                     Math.floor(y / 4) - Math.floor(y / 100) + Math.floor(y / 400) - 32045;
+            
+            // Add time of day
+            const hours = date.getHours() + date.getMinutes() / 60 + date.getSeconds() / 3600;
+            jd += (hours - 12) / 24;
+            
+            return jd;
+        }
+
+        // Calculate Panchang data based on date
+        function calculatePanchang(date) {
+            const jd = dateToJD(date);
+            const moonLong = getMoonLongitude(jd);
+            const sunLong = getSunLongitude(jd);
+            
+            // Calculate Nakshatra (27 divisions of 13.333... degrees each)
+            const nakshatraIndex = Math.floor(moonLong / 13.333333333333334);
+            
+            // Calculate Tithi (angular difference between Sun and Moon, divided into 30 parts)
+            let tithiAngle = moonLong - sunLong;
+            if (tithiAngle < 0) tithiAngle += 360;
+            
+            const tithiNumber = Math.floor(tithiAngle / 12);
+            
+            // Determine paksha and tithi
+            let paksha, tithi;
+            if (tithiNumber < 15) {
+                paksha = 'Shukla Paksha'; // Waxing moon
+                tithi = TITHIS[tithiNumber];
+            } else {
+                paksha = 'Krishna Paksha'; // Waning moon
+                tithi = tithiNumber === 29 ? 'Amavasya' : TITHIS[tithiNumber - 15];
+            }
+            
+            return {
+                nakshatra: NAKSHATRAS[nakshatraIndex % 27],
+                tithi: tithi,
+                paksha: paksha,
+                nakshatraIndex: nakshatraIndex % 27,
+                tithiNumber: tithiNumber
+            };
+        }
+
+        // Format date for display
+        function formatDate(dateStr) {
+            const date = new Date(dateStr);
+            return date.toLocaleDateString('en-US', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+        }
+
+        // Show error message
+        function showError(message) {
+            const errorEl = document.getElementById('errorMsg');
+            errorEl.textContent = message;
+            errorEl.classList.add('show');
+        }
+
+        // Hide error message
+        function hideError() {
+            document.getElementById('errorMsg').classList.remove('show');
+        }
+
+        // Show loading
+        function showLoading() {
+            document.getElementById('loading').classList.add('show');
+            document.getElementById('calculateBtn').disabled = true;
+            document.getElementById('calculateBtn').textContent = 'Calculating...';
+        }
+
+        // Hide loading
+        function hideLoading() {
+            document.getElementById('loading').classList.remove('show');
+            document.getElementById('calculateBtn').disabled = false;
+            document.getElementById('calculateBtn').textContent = 'Calculate Star Birthdays';
+        }
+
+        // Find star birthday for a specific year
+        function findStarBirthdayForYear(year, targetNakshatraIndex, targetTithiNumber, targetPaksha) {
+            // Search through entire year
+            for (let month = 0; month < 12; month++) {
+                const daysInMonth = new Date(year, month + 1, 0).getDate();
+                
+                for (let day = 1; day <= daysInMonth; day++) {
+                    const checkDate = new Date(year, month, day, 12, 0, 0);
+                    const panchang = calculatePanchang(checkDate);
+                    
+                    if (panchang.nakshatraIndex === targetNakshatraIndex && 
+                        panchang.tithiNumber === targetTithiNumber && 
+                        panchang.paksha === targetPaksha) {
+                        return {
+                            year: year,
+                            date: checkDate,
+                            nakshatra: panchang.nakshatra,
+                            tithi: panchang.tithi,
+                            paksha: panchang.paksha
+                        };
+                    }
+                }
+            }
+            
+            return null;
+        }
+
+        // Main calculation function
+        async function calculateStarBirthday() {
+            hideError();
+            
+            const birthDate = document.getElementById('birthDate').value;
+            
+            if (!birthDate) {
+                showError('Please enter your birth date');
+                return;
+            }
+
+            showLoading();
+            
+            // Hide previous results
+            document.getElementById('birthInfo').classList.remove('show');
+            document.getElementById('results').classList.remove('show');
+
+            // Simulate processing delay for better UX
+            await new Promise(resolve => setTimeout(resolve, 500));
+
+            try {
+                const birthTime = document.getElementById('birthTime').value;
+                const [hours, minutes] = birthTime.split(':');
+                const birthDateObj = new Date(birthDate);
+                birthDateObj.setHours(parseInt(hours), parseInt(minutes), 0);
+                
+                const birthPanchang = calculatePanchang(birthDateObj);
+
+                // Display birth info
+                document.getElementById('birthDateDisplay').textContent = formatDate(birthDate);
+                document.getElementById('birthNakshatra').textContent = birthPanchang.nakshatra;
+                document.getElementById('birthTithi').textContent = birthPanchang.tithi;
+                document.getElementById('birthPaksha').textContent = birthPanchang.paksha;
+                document.getElementById('birthInfo').classList.add('show');
+
+                // Calculate star birthdays for next 5 years
+                const currentYear = new Date().getFullYear();
+                const starBirthdays = [];
+
+                for (let year = currentYear; year < currentYear + 5; year++) {
+                    const starBirthday = findStarBirthdayForYear(
+                        year,
+                        birthPanchang.nakshatraIndex,
+                        birthPanchang.tithiNumber,
+                        birthPanchang.paksha
+                    );
+                    
+                    if (starBirthday) {
+                        starBirthdays.push(starBirthday);
+                    }
+                }
+
+                // Display results
+                const birthdayList = document.getElementById('birthdayList');
+                birthdayList.innerHTML = '';
+
+                if (starBirthdays.length === 0) {
+                    showError('Could not find matching star birthdays in the next 5 years. This can happen with certain rare combinations.');
+                } else {
+                    starBirthdays.forEach(birthday => {
+                        const card = document.createElement('div');
+                        card.className = 'birthday-card';
+                        card.innerHTML = `
+                            <div class="year-badge">${birthday.year}</div>
+                            <div class="birthday-details">
+                                <p class="date">${formatDate(birthday.date.toISOString().split('T')[0])}</p>
+                                <p class="nakshatra">${birthday.nakshatra}</p>
+                                <p class="tithi">${birthday.tithi} - ${birthday.paksha}</p>
+                            </div>
+                        `;
+                        birthdayList.appendChild(card);
+                    });
+
+                    document.getElementById('results').classList.add('show');
+                }
+
+            } catch (error) {
+                showError('An error occurred while calculating. Please try again.');
+                console.error(error);
+            } finally {
+                hideLoading();
+            }
+        }
+
+        // Allow Enter key to submit
+        document.addEventListener('DOMContentLoaded', function() {
+            const inputs = document.querySelectorAll('input');
+            inputs.forEach(input => {
+                input.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        calculateStarBirthday();
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
