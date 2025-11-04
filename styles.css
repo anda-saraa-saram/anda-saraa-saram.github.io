@@ -731,3 +731,22 @@ body {
         font-size: 32px;
     }
 }
+
+
+
+
+.footer-links {
+    margin-top: 10px;
+    font-size: 14px;
+}
+
+.footer-links a {
+    color: var(--primary-light);
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.footer-links a:hover {
+    color: var(--primary-color);
+    text-decoration: underline;
+}
